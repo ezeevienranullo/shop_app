@@ -1,16 +1,96 @@
-# shop_app
+Item Price Tracker
 
-A new Flutter project.
+A simple Flutter application for tracking items and their prices.
+The app allows users to add items, view them in a list, edit or delete entries, and automatically calculate totals. Data is stored locally using SQLite so that the item history persists even after the app is closed.
 
-## Getting Started
+This project demonstrates a clean Flutter architecture using BLoC state management, repository pattern, and dependency injection.
 
-This project is a starting point for a Flutter application.
+  **Features**
 
-A few resources to get you started if this is your first Flutter project:
+Add items with price
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+View list of saved items
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Edit existing items
+
+Delete items
+
+Automatic total price calculation
+
+Automatic total item count
+
+Number formatting with comma separators
+
+Local data persistence using SQLite
+
+Sorted item display (ascending price)
+
+ **Architecture**
+
+The application follows a Clean Architecture structure to keep the code modular and maintainable.
+
+UI (Presentation)
+↓
+BLoC (State Management)
+↓
+Repository
+↓
+Datasource
+↓
+SQLite Database
+ 
+ **Layers**
+
+Presentation
+
+UI widgets
+
+BLoC for state management
+
+ **Domain**
+
+Entities
+
+Repository interfaces
+
+  **Data**
+
+Repository implementation
+
+SQLite datasource
+
+ **Project Structure**
+lib
+│
+├── core
+│   └── di
+│       └── service_locator.dart
+│
+├── data
+│   ├── datasources
+│   ├── models
+│   └── repositories
+│
+├── domain
+│   ├── entities
+│   └── repositories
+│
+├── presentation
+│   ├── bloc
+│   └── screens
+│
+└── main.dart
+
+ **Technologies Used**
+
+* Flutter
+* 
+* BLoC State Management
+* 
+* SQLite (sqflite)
+* 
+* Dependency Injection (get_it)
+* 
+* Clean Architecture principles
+* 
+* Intl package for number formatting
