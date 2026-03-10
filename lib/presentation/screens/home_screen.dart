@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
 import 'package:shop_app/core/utils/widgets/inter_text.dart';
 import '../../core/utils/helpers.dart';
 import '../../core/utils/widgets/input_type_decoration.dart';
@@ -9,6 +8,7 @@ import '../../domain/entities/item.dart';
 import '../bloc/item_bloc.dart';
 import '../bloc/item_event.dart';
 import '../bloc/item_state.dart';
+import 'scan_price_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +30,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> openScanner() async {
+
+      final price = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const ScanPriceScreen(),
+        ),
+      );
+
+      if (price != null) {
+
+        priceController.text = price.toString();
+
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -69,12 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {
-                    // simulate scanned item
-                    itemController.text = "Apple";
-                    priceController.text = "10";
-
-                  },
+                  onPressed: openScanner,
                   child:InterText.regular('Scan', Colors.black, 16),
                 ),
               ],
@@ -120,6 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),)
     );
 
+
   }
 
 }
+

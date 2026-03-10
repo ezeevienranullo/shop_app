@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       create: (_) => getIt<ItemBloc>()..add(LoadItemsEvent()),
 
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: HomeScreen(),
       ),
 
