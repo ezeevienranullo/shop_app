@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shop_app/core/utils/constant/app_colors.dart';
 import 'package:shop_app/core/utils/widgets/inter_text.dart';
 
+import '../../../domain/entities/item.dart';
 import '../../../presentation/bloc/item_bloc.dart';
 import '../../../presentation/bloc/item_event.dart';
 import '../helpers.dart';
@@ -11,51 +13,44 @@ import 'input_type_decoration.dart';
 
 Widget itemWidget({
   required int? id,
+  required int index,
   required String price,
   required String name,
   required String totalPrice,
   required String quantity,
+  required Item item,
   required BuildContext context,
 }) {
 
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey.shade200, width: 0.3),
-    ),
-
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: InterText.regular(name, Colors.black54, 12),),
-        SizedBox(width: 5,),
-        InterText.regular('(${formatAmount(price)} X ${formatAmount(quantity)})', Colors.black54, 12),
-        SizedBox(width: 15,),
-        InterText.bold('\₱ ${formatAmount(totalPrice)}', Colors.orange, 13),
-        SizedBox(width: 10,),
-        Row(
-          children: [
-
-            GestureDetector(
-              onLongPress: () {
-                context.read<ItemBloc>().add(DeleteItemEvent(id!));
-              },
-              child: Icon(Icons.delete, color: Colors.black12, size: 18,),
-            ),
-
-            const SizedBox(width: 8),
-
-            GestureDetector(
-              onTap: () {
-                showEditBottomSheet(context, id!, name, price, quantity);
-              },
-              child: Icon(Icons.edit, color: Colors.black12, size: 18),
-            ),
-
-          ],
-        )
-
-      ],
+  return GestureDetector(
+    onTap: () {
+      showItemOptions(context, item);
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200, width: 0.3),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: InterText.bold('$index', Colors.black54, 12),),
+          Expanded(
+              flex: 4,
+              child: Text(name, style: GoogleFonts.inter(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w400), maxLines: 1, overflow: TextOverflow.ellipsis,)),
+          Expanded(
+            flex: 4,
+            child: InterText.regular(formatAmount(price), Colors.black, 14, align: TextAlign.right,),),
+          Expanded(
+            flex: 4,
+            child: InterText.regular(formatAmount(quantity), Colors.black, 14, align: TextAlign.right,),),
+          Expanded(
+            flex: 4,
+            child: InterText.bold(formatAmount(totalPrice), Colors.black, 14, align: TextAlign.right,),),
+        ],
+      ),
     ),
   );
 }
@@ -176,6 +171,58 @@ void showEditBottomSheet(
               ),
             ),
 
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void showItemOptions(BuildContext context, Item item) {
+
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+
+      return SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            InterText.medium(item.name, Colors.black87, 18),
+            ListTile(
+              leading: const Icon(Icons.edit, color: Colors.green),
+              title: const Text("Edit Item"),
+              onTap: () {
+                Navigator.pop(context);
+                showEditBottomSheet(context, item.id!, item.name, item.price.toString(), item.quantity.toString());
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text("Delete Item"),
+              onTap: () {
+                context.read<ItemBloc>().add(DeleteItemEvent(item.id!));
+
+                Navigator.pop(context);
+
+              },
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       );
