@@ -40,6 +40,8 @@ class ItemLocalDatasource {
       int id,
       String name,
       double price,
+      double totalPrice,
+      double quantity,
       ) async {
 
     final db = await DatabaseHelper.instance.database;
@@ -49,6 +51,8 @@ class ItemLocalDatasource {
       {
         'name': name,
         'price': price,
+        'total_price': totalPrice,
+        'quantity': quantity,
       },
       where: 'id = ?',
       whereArgs: [id],

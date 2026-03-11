@@ -15,6 +15,8 @@ class ItemRepositoryImpl implements ItemRepository {
     final model = ItemModel(
       name: item.name,
       price: item.price,
+      totalPrice: item.totalPrice,
+      quantity: item.quantity,
     );
 
     await datasource.insertItem(model);
@@ -36,7 +38,7 @@ class ItemRepositoryImpl implements ItemRepository {
   }
 
   @override
-  Future<void> updateItem(int id, String name, double price) async{
-    await datasource.updateItem(id, name, price);
+  Future<void> updateItem(int id, String name, double price,double totalPrice,double quantity) async{
+    await datasource.updateItem(id, name, price, totalPrice, quantity);
   }
 }

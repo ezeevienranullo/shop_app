@@ -8,6 +8,8 @@ class ItemModel extends Item {
     this.id,
     required super.name,
     required super.price,
+    required super.totalPrice,
+    required super.quantity,
   });
 
   Map<String, dynamic> toMap() {
@@ -16,6 +18,8 @@ class ItemModel extends Item {
       'id': id,
       'name': name,
       'price': price,
+      'total_price': totalPrice,
+      'quantity': quantity,
     };
 
   }
@@ -26,6 +30,8 @@ class ItemModel extends Item {
       id: map['id'],
       name: map['name'],
       price: map['price'],
+      totalPrice: map['total_price'],
+      quantity: map['quantity'],
     );
 
   }

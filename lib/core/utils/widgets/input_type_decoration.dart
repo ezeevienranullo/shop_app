@@ -30,7 +30,7 @@ OutlineInputBorder myInputBorder(double circularValue) {
       borderRadius: BorderRadius.all(Radius.circular(circularValue)),
       borderSide: BorderSide(
         color: AppColors.formBoxBorderColor,
-        width: 0.5,
+        width: 1,
       ));
 }
 

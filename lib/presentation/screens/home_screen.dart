@@ -19,13 +19,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-    final itemController = TextEditingController();
+  final itemController = TextEditingController();
   final priceController = TextEditingController();
+  final quantityController = TextEditingController();
   @override
   void initState() {
     super.initState();
-
-
   }
 
   @override
@@ -40,11 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
       if (price != null) {
-
         priceController.text = price.toString();
-
       }
     }
+
+    quantityController.text = '1';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,78 +51,96 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           SizedBox(height: 30,),
-        TextField(
-              controller: itemController,
-              decoration: buildInputDecoration(hintText: 'Banana', labelText: 'Item',),
-              textCapitalization: TextCapitalization.words,
-            ),
+          TextField(
+            controller: itemController,
+            decoration: buildInputDecoration(hintText: 'Banana', labelText: 'Item',),
+            textCapitalization: TextCapitalization.words,
+          ),
           SizedBox(height: 16,),
-            TextField(
+          Row(
+          children: [
+            Flexible(child: TextField(
               controller: priceController,
+              decoration:  buildInputDecoration(hintText: '99.00', labelText: 'Price',),
               keyboardType: TextInputType.number,
-              decoration: buildInputDecoration(hintText: '99.00', labelText: 'Price',),
-            ),
-
-            const SizedBox(height: 10),
-
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
+            ),),
+            SizedBox(width: 5,),
+            Flexible(child: TextField(
+              controller: quantityController,
+              keyboardType: TextInputType.number,
+              decoration: buildInputDecoration(hintText: 'Quantity', labelText: 'Quantity',),
+            ),),
+          ],
+        ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed:() {
+                  if(priceController.text.isNotEmpty) {
                     final item = Item(
                       name: itemController.text,
                       price: double.parse(priceController.text),
+                      totalPrice:((double.parse(priceController.text.isNotEmpty
+                          ? priceController.text
+                          : '0') * double.parse(quantityController.text.isNotEmpty
+                          ? quantityController.text
+                          : '1'))),
+                      quantity: double.parse(quantityController.text.isNotEmpty ? quantityController.text : '1'),
                     );
                     context.read<ItemBloc>().add(
                       AddItemEvent(item),
                     );
                     itemController.clear();
                     priceController.clear();
-                  },
-                  child:  InterText.regular('Add Item', Colors.black, 16),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: openScanner,
-                  child:InterText.regular('Scan', Colors.black, 16),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            Expanded(
-              child: BlocBuilder<ItemBloc, ItemState>(
-                builder: (context, state) {
-
-                  final items = List.of(state.items)
-                    ..sort((a, b) => b.id!.compareTo(a.id!));
-
-                  return ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return itemWidget(
-                          id: item.id,
-                          name: item.name,
-                          price: "\₱${formatPrice(item.price)}",
-                          context: context);
-                    },
-                  );
+                    quantityController.text = '1';
+                  }
                 },
+                child: InterText.bold('ADD ITEM', Colors.black, 14),
               ),
-            ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: openScanner,
+                child:InterText.bold('SCAN', Colors.black, 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+                child: BlocBuilder<ItemBloc, ItemState>(
+                  builder: (context, state) {
 
-        BlocBuilder<ItemBloc, ItemState>(
+                    final items = List.of(state.items)
+                      ..sort((a, b) => b.id!.compareTo(a.id!));
+
+                    return ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return itemWidget(
+                            id: item.id,
+                            name: item.name,
+                            price: item.price.toString(),
+                            context: context,
+                            totalPrice: '${item.totalPrice}',
+                            quantity: '${item.quantity}');
+                      },
+                    );
+                  },
+                ),
+              ),
+          BlocBuilder<ItemBloc, ItemState>(
             builder: (context, state) {
-
-              return Column(
-                children: [
-                  InterText.regular("Total Items: ${state.totalItems}", Colors.black54, 14),
-                  InterText.bold("Total Price: ₱ ${formatPrice(state.totalPrice)}", Colors.black, 16),
-                ],
+              return Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(height: 10),
+                    InterText.regular("Total Items: ${state.totalItems}", Colors.black54, 14),
+                    InterText.bold("Total Price: ₱ ${formatAmount(state.totalPrice.toString())}", Colors.black, 16),
+                  ],
+                ),
               );
-
             },
           )
         ],

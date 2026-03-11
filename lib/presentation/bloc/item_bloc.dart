@@ -45,6 +45,8 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
         event.id,
         event.name,
         event.price,
+        event.totalPrice,
+        event.quantity,
       );
 
       final items = await repository.getItems();

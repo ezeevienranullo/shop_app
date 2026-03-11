@@ -26,8 +26,10 @@ class UpdateItemEvent extends ItemEvent {
   final int id;
   final String name;
   final double price;
+  final double totalPrice;
+  final double quantity;
 
-  UpdateItemEvent(this.id, this.name, this.price);
+  UpdateItemEvent(this.id, this.name, this.price, this.totalPrice, this.quantity);
 
 }
 

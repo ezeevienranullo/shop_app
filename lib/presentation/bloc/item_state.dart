@@ -8,7 +8,7 @@ class ItemState extends Equatable {
   const ItemState({this.items = const []});
 
   double get totalPrice =>
-      items.fold(0, (sum, item) => sum + item.price);
+      items.fold(0, (sum, item) => sum + item.totalPrice);
 
   int get totalItems => items.length;
 

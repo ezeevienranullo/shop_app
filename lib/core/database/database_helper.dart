@@ -39,7 +39,9 @@ class DatabaseHelper {
       CREATE TABLE items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
-        price REAL
+        total_price REAL,
+        price REAL,
+        quantity REAL
       )
     ''');
 
