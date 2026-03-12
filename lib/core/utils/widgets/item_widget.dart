@@ -9,6 +9,7 @@ import '../../../domain/entities/item.dart';
 import '../../../presentation/bloc/item_bloc.dart';
 import '../../../presentation/bloc/item_event.dart';
 import '../helpers.dart';
+import 'button_widget.dart';
 import 'input_type_decoration.dart';
 
 Widget itemWidget({
@@ -27,28 +28,28 @@ Widget itemWidget({
       showItemOptions(context, item);
     },
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200, width: 0.3),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.2), width: 0.3),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: InterText.bold('$index', Colors.black54, 12),),
+            child: InterText.bold('$index', AppColors.secondaryColor, 14),),
           Expanded(
-              flex: 4,
-              child: Text(name, style: GoogleFonts.inter(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w400), maxLines: 1, overflow: TextOverflow.ellipsis,)),
+              flex: 6,
+              child: Text(name, style: GoogleFonts.inter(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w400), maxLines: 1, overflow: TextOverflow.ellipsis,)),
+          Expanded(
+            flex: 3,
+            child: InterText.regular(formatAmount(price), Colors.black54, 14, align: TextAlign.right,),),
+          Expanded(
+            flex: 2,
+            child: InterText.regular(formatAmount(quantity), Colors.black54, 14, align: TextAlign.right,),),
           Expanded(
             flex: 4,
-            child: InterText.regular(formatAmount(price), Colors.black, 14, align: TextAlign.right,),),
-          Expanded(
-            flex: 4,
-            child: InterText.regular(formatAmount(quantity), Colors.black, 14, align: TextAlign.right,),),
-          Expanded(
-            flex: 4,
-            child: InterText.bold(formatAmount(totalPrice), Colors.black, 14, align: TextAlign.right,),),
+            child: InterText.bold(formatAmount(totalPrice), AppColors.secondaryColor, 14, align: TextAlign.right,),),
         ],
       ),
     ),
@@ -141,8 +142,10 @@ void showEditBottomSheet(
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
+              child: Button(
+                text: 'Save',
+                isBusy: false,
+                onTap: () {
 
                   if (priceController.text.isNotEmpty) {
 
@@ -167,7 +170,6 @@ void showEditBottomSheet(
 
                   Navigator.pop(context);
                 },
-                child: InterText.medium('Save', AppColors.textColor, 14),
               ),
             ),
 

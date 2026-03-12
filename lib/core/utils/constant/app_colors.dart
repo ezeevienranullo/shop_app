@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static Color defaultColor = HexColor("#7fc1cd");
-  static Color defaultColorGradient1 = HexColor("#98CDD7");
-  static Color defaultColorGradient2 = HexColor("#a5d3dc");
+  static Color primaryColor = HexColor("#FF5A5A");
+  static Color secondaryColor = HexColor("#FF8B5A");
+  static Color accentColor = HexColor("#FFD45A");
   static Color scaffoldColor = HexColor("#F5F7F7");
   static Color splashScreenColor = HexColor("#6A7EB4");
   static Color titleColor = HexColor("#34446E");
