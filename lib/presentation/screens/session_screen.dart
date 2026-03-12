@@ -176,7 +176,7 @@ class _SessionScreenState extends State<SessionScreen> {
                     borderColor: AppColors.primaryColor,
                     textColor: AppColors.textColor,
                     color: Colors.white,),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 15,),
                   Button(text: 'Finish Grocery', onTap: () {  }, isBusy: false,
                     color: AppColors.primaryColor,),
                 ],
