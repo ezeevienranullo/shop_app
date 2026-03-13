@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/core/utils/widgets/inter_text.dart';
+import 'package:shop_app/presentation/bloc/session_bloc.dart';
+import 'package:shop_app/presentation/bloc/session_state.dart';
 import 'package:shop_app/presentation/screens/session_screen.dart';
 import '../../core/utils/constant/app_colors.dart';
-import '../../core/utils/helpers.dart';
 import '../../core/utils/widgets/historyitem_widget.dart';
-import '../../core/utils/widgets/input_type_decoration.dart';
-import '../../core/utils/widgets/item_widget.dart';
-import '../../domain/entities/item.dart';
 import '../bloc/item_bloc.dart';
-import '../bloc/item_event.dart';
 import '../bloc/item_state.dart';
-import 'scan_price_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -73,7 +69,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: 80,
                   height: 80,
                   child: Center(
-                    child: InterText.extraBold('Start New', AppColors.whiteColor, 14, align: TextAlign.center,),
+                    child: BlocBuilder<ItemBloc, ItemState>(
+                      builder: (context, state) {
+                        final items = List.of(state.items)
+                        .where((item)=> item.sessionId == null).toList();
+                        return InterText.extraBold(items.isNotEmpty ? 'Continue' : 'Start New',
+                          AppColors.whiteColor, 14, align: TextAlign.center,);
+                      },
+                    )
                   ),
                 ),
               ),
@@ -86,12 +89,25 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 10,),
-            Flexible(child: ListView.builder(
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                return historyItemWidget(context: context);
-              },
-            ))
+            Flexible(
+              flex: 4,
+              child: BlocBuilder<SessionBloc, SessionState>(
+                builder: (context, state) {
+                  final sessions = List.of(state.sessions)
+                    ..sort((a, b) => b.id!.compareTo(a.id!));
+                  return ListView.builder(
+                    itemCount: sessions.length,
+                    itemBuilder: (context, index) {
+                      final session = sessions[index];
+                      return historyItemWidget(
+                          context: context,
+                        session: session
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
         )

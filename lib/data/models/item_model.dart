@@ -3,9 +3,11 @@ import '../../domain/entities/item.dart';
 class ItemModel extends Item {
 
   final int? id;
+  final String? sessionId;
 
   ItemModel({
     this.id,
+    this.sessionId,
     required super.name,
     required super.price,
     required super.totalPrice,
@@ -16,6 +18,7 @@ class ItemModel extends Item {
 
     return {
       'id': id,
+      'session_id': sessionId,
       'name': name,
       'price': price,
       'total_price': totalPrice,
@@ -28,6 +31,7 @@ class ItemModel extends Item {
 
     return ItemModel(
       id: map['id'],
+      sessionId: map['session_id'],
       name: map['name'],
       price: map['price'],
       totalPrice: map['total_price'],

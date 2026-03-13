@@ -1,5 +1,6 @@
 class Item {
   final int? id;
+  final String? sessionId;
   final String name;
   final double price;
   final double totalPrice;
@@ -7,6 +8,7 @@ class Item {
 
   Item({
     this.id,
+    this.sessionId,
     required this.name,
     required this.price,
     required this.totalPrice,

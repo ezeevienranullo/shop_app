@@ -15,17 +15,16 @@ import 'input_type_decoration.dart';
 Widget itemWidget({
   required int? id,
   required int index,
-  required String price,
-  required String name,
-  required String totalPrice,
-  required String quantity,
   required Item item,
   required BuildContext context,
+  required bool isEditable,
 }) {
 
   return GestureDetector(
     onTap: () {
-      showItemOptions(context, item);
+      if (isEditable) {
+        showItemOptions(context, item);
+      }
     },
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -39,21 +38,21 @@ Widget itemWidget({
           InterText.bold('$index', AppColors.secondaryColor, 14),
           Expanded(
               flex: 5,
-              child: Text('  $name', style: GoogleFonts.inter(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w400),
+              child: Text('  ${item.name}', style: GoogleFonts.inter(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w400),
                 maxLines: 1, overflow: TextOverflow.ellipsis,)
           ),
           Expanded(
             flex: 2,
             child:
-            InterText.regular(formatAmount(price), Colors.black54, 14)
+            InterText.regular(formatAmount('${item.price}'), Colors.black54, 14)
           ),
           Expanded(
             flex: 1,
-            child: InterText.regular(formatAmount(quantity), Colors.black54, 14, align: TextAlign.right,)
+            child: InterText.regular(formatAmount('${item.quantity}'), Colors.black54, 14, align: TextAlign.right,)
           ),
           Expanded(
             flex: 3,
-            child: InterText.bold(formatAmount(totalPrice), AppColors.secondaryColor, 14, align: TextAlign.right,)
+            child: InterText.bold(formatAmount('${item.totalPrice}'), AppColors.secondaryColor, 14, align: TextAlign.right,)
           ),
         ],
       ),
@@ -224,9 +223,7 @@ void showItemOptions(BuildContext context, Item item) {
               title: const Text("Delete Item"),
               onTap: () {
                 context.read<ItemBloc>().add(DeleteItemEvent(item.id!));
-
                 Navigator.pop(context);
-
               },
             ),
             const SizedBox(height: 20),

@@ -22,29 +22,34 @@ class DatabaseHelper {
   Future<Database> _initDB(String filePath) async {
 
     final dbPath = await getDatabasesPath();
-
     final path = join(dbPath, filePath);
-
     return await openDatabase(
       path,
       version: 1,
       onCreate: _createDB,
+      onUpgrade: (Database db, oldVersion, newVersion) async {
+        // await db.execute('DROP TABLE IF EXISTS items');
+        // await _createDB(db, newVersion);
+      }
     );
-
   }
 
   Future _createDB(Database db, int version) async {
+    await createItemTable(db);
+    await createSessionTable(db);
+  }
 
-    await db.execute('''
-      CREATE TABLE items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        total_price REAL,
-        price REAL,
-        quantity REAL
-      )
-    ''');
 
+  static Future<void> createItemTable(Database database) async {
+    await database.execute(
+        'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT,'
+            'name TEXT, total_price REAL, price REAL, quantity REAL, session_id TEXT)');
+  }
+
+  static Future<void> createSessionTable(Database database) async {
+    await database.execute(
+        'CREATE TABLE IF NOT EXISTS grocery_session (id INTEGER PRIMARY KEY AUTOINCREMENT,'
+            'name TEXT, date DATE, total_price REAL, total_item INTEGER, session_id TEXT)');
   }
 
 }

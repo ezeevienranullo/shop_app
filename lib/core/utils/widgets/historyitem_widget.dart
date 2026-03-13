@@ -1,14 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:shop_app/core/utils/constant/app_colors.dart';
 import 'package:shop_app/core/utils/widgets/inter_text.dart';
+import 'package:shop_app/domain/entities/session.dart';
+import 'package:shop_app/presentation/bloc/item_bloc.dart';
+import 'package:shop_app/presentation/bloc/item_event.dart';
+import 'package:shop_app/presentation/bloc/session_bloc.dart';
+import 'package:shop_app/presentation/screens/session_history_screen.dart';
+
+import '../../../presentation/bloc/session_event.dart';
 
 Widget historyItemWidget({
   required BuildContext context,
+  required Session session,
 }) {
 
   return GestureDetector(
     onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SessionHistoryScreen(session: session),
+          ));
     },
     child: Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -26,51 +41,44 @@ Widget historyItemWidget({
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InterText.extraBold('SM', AppColors.whiteColor, 14),
+              InterText.extraBold(session.name, AppColors.whiteColor, 14),
               SizedBox(height: 5,),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InterText.regular('Total Price ', AppColors.whiteColor, 12),
-                        InterText.regular('6,009.65', AppColors.whiteColor, 14),
-                      ],
-                    ),
-                  ]
-              )
+              InterText.regular(DateFormat('MM/dd/yy - hh:mm a').format(session.date), AppColors.whiteColor, 12),
             ],
           ),
-          SizedBox(width: 50,),
+          Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              InterText.extraBold('Mar 14, 2026', AppColors.whiteColor, 14),
               SizedBox(height: 5,),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InterText.regular('Total Items', AppColors.whiteColor, 12),
-                        InterText.regular('32', AppColors.whiteColor, 14, align: TextAlign.center,),
-                      ],
-                    ),
-                  ]
-              )
+              InterText.extraBold('${session.totalPrice}', AppColors.whiteColor, 12,),
+              InterText.regular('Total price', AppColors.whiteColor, 12),
+            ],
+          ),
+          Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(height: 5,),
+              InterText.extraBold('${session.totalItem}', AppColors.whiteColor, 12),
+              InterText.regular('Items', AppColors.whiteColor, 12),
             ],
           ),
           Spacer(),
           InkWell(
-            onTap: () {},
+            onLongPress: () {
+              context.read<SessionBloc>().add(DeleteSessionEvent(session.id!));
+              context.read<ItemBloc>().add(DeleteItemBySessionIdEvent(session.sessionId));
+            },
             child: Icon(Icons.delete, color: AppColors.whiteColor, size: 25),
-          )
+          ),
         ],
       ),
     ),

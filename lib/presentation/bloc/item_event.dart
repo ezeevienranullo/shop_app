@@ -17,8 +17,12 @@ class AddItemEvent extends ItemEvent {
 
 class DeleteItemEvent extends ItemEvent {
   final int id;
-
   DeleteItemEvent(this.id);
+}
+
+class DeleteItemBySessionIdEvent extends ItemEvent {
+  final String sessionId;
+  DeleteItemBySessionIdEvent(this.sessionId);
 }
 
 class UpdateItemEvent extends ItemEvent {
@@ -31,6 +35,12 @@ class UpdateItemEvent extends ItemEvent {
 
   UpdateItemEvent(this.id, this.name, this.price, this.totalPrice, this.quantity);
 
+}
+class ClearItemsEvent extends ItemEvent {}
+
+class LoadItemsBySessionEvent extends ItemEvent {
+  final String sessionId;
+  LoadItemsBySessionEvent(this.sessionId);
 }
 
 class LoadItemsEvent extends ItemEvent {}

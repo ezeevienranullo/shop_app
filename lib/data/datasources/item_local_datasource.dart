@@ -18,10 +18,10 @@ class ItemLocalDatasource {
 
     final db = await DatabaseHelper.instance.database;
 
-    final result = await db.query('items');
-
+    final result = await db.query('items',
+      where: 'session_id IS NULL',
+    );
     return result.map((e) => ItemModel.fromMap(e)).toList();
-
   }
 
   Future<void> deleteItem(int id) async {
@@ -58,5 +58,34 @@ class ItemLocalDatasource {
       whereArgs: [id],
     );
 
+  }
+
+  Future<void> clearItems() async {
+    final db = await DatabaseHelper.instance.database;
+
+    await db.delete(
+      'items',
+      where: 'session_id IS NULL',
+    );
+  }
+
+  Future<List<ItemModel>> getItemsBySession(String sessionId) async {
+    final db = await DatabaseHelper.instance.database;
+    final maps = await db.query(
+      'items',
+      where: 'session_id = ?',
+      whereArgs: [sessionId],
+    );
+
+    return maps.map((e) => ItemModel.fromMap(e)).toList();
+  }
+
+  Future<void> deleteBySessionId(String id) async {
+    final db = await DatabaseHelper.instance.database;
+    await db.delete(
+      'items',
+      where: 'session_id = ?',
+      whereArgs: [id],
+    );
   }
 }

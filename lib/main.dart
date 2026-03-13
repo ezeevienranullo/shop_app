@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/presentation/bloc/item_event.dart';
+import 'package:shop_app/presentation/bloc/session_bloc.dart';
+import 'package:shop_app/presentation/bloc/session_event.dart';
 import 'core/di/service_locator.dart';
 import 'presentation/bloc/item_bloc.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() {
-
   setupLocator();
-
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -20,17 +19,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ItemBloc>(
+          create: (_) => getIt<ItemBloc>()..add(LoadItemsEvent()),
+        ),
 
-      create: (_) => getIt<ItemBloc>()..add(LoadItemsEvent()),
-
+        BlocProvider<SessionBloc>(
+          create: (_) => getIt<SessionBloc>()..add(LoadSessionsEvent()),
+        ),
+      ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomeScreen(),
       ),
-
     );
-
   }
-
 }

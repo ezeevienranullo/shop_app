@@ -20,16 +20,12 @@ class ItemRepositoryImpl implements ItemRepository {
     );
 
     await datasource.insertItem(model);
-
   }
 
   @override
   Future<List<Item>> getItems() async {
-
     final items = await datasource.getItems();
-
     return items;
-
   }
 
   @override
@@ -40,5 +36,20 @@ class ItemRepositoryImpl implements ItemRepository {
   @override
   Future<void> updateItem(int id, String name, double price,double totalPrice,double quantity) async{
     await datasource.updateItem(id, name, price, totalPrice, quantity);
+  }
+
+  @override
+  Future<void> clearItems() async{
+    await datasource.clearItems();
+  }
+
+  @override
+  Future<List<Item>> getItemsBySession(String sessionId) async {
+    return await datasource.getItemsBySession(sessionId);
+  }
+
+  @override
+  Future<void> deleteItemBySessionId(String id)async {
+    await datasource.deleteBySessionId(id);
   }
 }

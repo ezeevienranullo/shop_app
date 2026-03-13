@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import '../constant/app_colors.dart';
 import 'inter_text.dart';
 
-
 InputDecoration buildInputDecoration({
   required String hintText,
   required String labelText,
@@ -48,7 +47,7 @@ OutlineInputBorder myFocusBorder(double circularValue) {
   return OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(circularValue)),
       borderSide: BorderSide(
-        color: AppColors.buttonColor,
+        color: AppColors.secondaryColor,
         width: 0.5,
       ));
 }

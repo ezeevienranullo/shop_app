@@ -7,10 +7,12 @@ import '../../core/utils/helpers.dart';
 import '../../core/utils/widgets/input_type_decoration.dart';
 import '../../core/utils/widgets/item_widget.dart';
 import '../../domain/entities/item.dart';
+import '../../domain/entities/session.dart';
 import '../bloc/item_bloc.dart';
 import '../bloc/item_event.dart';
 import '../bloc/item_state.dart';
-import 'scan_price_screen.dart';
+import '../bloc/session_bloc.dart';
+import '../bloc/session_event.dart';
 
 class SessionScreen extends StatefulWidget {
   const SessionScreen({super.key});
@@ -30,34 +32,11 @@ class _SessionScreenState extends State<SessionScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    context.read<ItemBloc>().add(LoadItemsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> openScanner() async {
-
-      final price = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const ScanPriceScreen(),
-        ),
-      );
-
-      if (price != null) {
-        priceController.text = price.toString();
-      }
-    }
-
     quantityController.text = '1';
 
     return Scaffold(
@@ -153,12 +132,9 @@ class _SessionScreenState extends State<SessionScreen> {
                             child:itemWidget(
                                 id: item.id,
                                 index: index + 1,
-                                name: item.name,
-                                price: item.price.toString(),
                                 context: context,
-                                totalPrice: '${item.totalPrice}',
-                                quantity: '${item.quantity}',
-                                item:item
+                                item:item,
+                               isEditable: true
                             )
                         );
                       },
@@ -170,15 +146,31 @@ class _SessionScreenState extends State<SessionScreen> {
               Padding(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 children: [
-                  Button(text: 'Add Item', onTap: () {
+                  Button(
+                    text: 'ADD ITEM',
+                    isBusy: false,
+                    textColor: AppColors.whiteColor,
+                    onTap: () {
                     showAddBottomSheet(context, _scrollController);
-                  }, isBusy: false,
-                    borderColor: AppColors.primaryColor,
+                    },
+                  ),
+                  SizedBox(height: 12,),
+                  Button(
+                    text: 'FINISH GROCERY',
+                    color: Colors.white,
                     textColor: AppColors.textColor,
-                    color: Colors.white,),
-                  SizedBox(height: 15,),
-                  Button(text: 'Finish Grocery', onTap: () {  }, isBusy: false,
-                    color: AppColors.primaryColor,),
+                    borderColor: AppColors.primaryColor,
+                    onTap: () {
+                    if(context.read<ItemBloc>().state.totalItems > 0) {
+                      showFinishBottomSheet(context, context
+                        .read<ItemBloc>()
+                        .state
+                        .totalItems, context
+                        .read<ItemBloc>()
+                        .state
+                        .totalPrice);
+                    }
+                  }, isBusy: false,),
                 ],
               ),)
             ],
@@ -284,7 +276,7 @@ void showAddBottomSheet(
               Button(
                 text: 'Confirm',
                 onTap: () {
-                  if (itemController.text.isNotEmpty) {
+                  if (itemController.text.isNotEmpty || priceController.text.isNotEmpty) {
                     final item = Item(
                       name: itemController.text,
                       price: double.parse(priceController.text.isNotEmpty ? priceController.text : '0'),
@@ -309,6 +301,98 @@ void showAddBottomSheet(
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     scrollToBottom();
                   });
+                },
+                isBusy: false,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void showFinishBottomSheet(
+    BuildContext context,
+    int totalItem,
+    double totalPrice,
+    ) {
+  final nameController = TextEditingController();
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+
+            const Text(
+              "Finish",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 20),
+
+            TextField(
+              controller: nameController,
+              textCapitalization: TextCapitalization.words,
+              decoration: buildInputDecoration(
+                hintText: "SM",
+                labelText: "Store",
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child:
+              Button(
+                text: 'Confirm',
+                onTap: () {
+                  if (nameController.text.isNotEmpty) {
+                    final sessionId = DateTime.now().millisecondsSinceEpoch.toString();
+
+                    final session = Session(
+                        name: nameController.text,
+                        sessionId: sessionId,
+                        date: DateTime.now(),
+                        totalItem: totalItem,
+                        totalPrice: totalPrice
+                    );
+                    /// save session
+                    context.read<SessionBloc>().add(
+                      AddSessionEvent(session),
+                    );
+                    /// attach session id to items
+                    context.read<SessionBloc>().add(
+                        UpdateItemsSessionEvent(sessionId)
+                    );
+                    /// optional clear items
+                    context.read<ItemBloc>().add(ClearItemsEvent());
+                    nameController.clear();
+                  }
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 isBusy: false,
               ),
