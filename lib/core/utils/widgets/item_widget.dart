@@ -36,20 +36,25 @@ Widget itemWidget({
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          InterText.bold('$index', AppColors.secondaryColor, 14),
           Expanded(
-            child: InterText.bold('$index', AppColors.secondaryColor, 14),),
-          Expanded(
-              flex: 6,
-              child: Text(name, style: GoogleFonts.inter(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w400), maxLines: 1, overflow: TextOverflow.ellipsis,)),
-          Expanded(
-            flex: 3,
-            child: InterText.regular(formatAmount(price), Colors.black54, 14, align: TextAlign.right,),),
+              flex: 5,
+              child: Text('  $name', style: GoogleFonts.inter(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w400),
+                maxLines: 1, overflow: TextOverflow.ellipsis,)
+          ),
           Expanded(
             flex: 2,
-            child: InterText.regular(formatAmount(quantity), Colors.black54, 14, align: TextAlign.right,),),
+            child:
+            InterText.regular(formatAmount(price), Colors.black54, 14)
+          ),
           Expanded(
-            flex: 4,
-            child: InterText.bold(formatAmount(totalPrice), AppColors.secondaryColor, 14, align: TextAlign.right,),),
+            flex: 1,
+            child: InterText.regular(formatAmount(quantity), Colors.black54, 14, align: TextAlign.right,)
+          ),
+          Expanded(
+            flex: 3,
+            child: InterText.bold(formatAmount(totalPrice), AppColors.secondaryColor, 14, align: TextAlign.right,)
+          ),
         ],
       ),
     ),

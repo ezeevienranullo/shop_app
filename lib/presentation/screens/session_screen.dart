@@ -80,8 +80,8 @@ class _SessionScreenState extends State<SessionScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InterText.regular('total item', AppColors.whiteColor, 16),
-                        InterText.bold('Grand total', AppColors.whiteColor, 16),
+                        InterText.regular('Total Item', AppColors.whiteColor, 16),
+                        InterText.bold('Grand Total', AppColors.whiteColor, 16),
                       ],
                     ),
                     BlocBuilder<ItemBloc, ItemState>(

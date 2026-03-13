@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
         bottom: Radius.circular(18.0))),
-          title: InterText.bold("Grocery Calculator", AppColors.textColor, 18),
+          title: InterText.extraBold("Grocery Calculator", AppColors.primaryColor, 18),
           actionsPadding: EdgeInsets.only(right: 10),
         ),
         extendBody: true,
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             child: Material(
-              color: AppColors.secondaryColor,
+              color: AppColors.primaryColor,
               shape: const CircleBorder(),
               child: InkWell(
                 customBorder: const CircleBorder(),
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             SizedBox(height: 10,),
             Flexible(child: ListView.builder(
-              itemCount: 0,
+              itemCount: 2,
               itemBuilder: (context, index) {
                 return historyItemWidget(context: context);
               },
